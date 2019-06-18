@@ -1,5 +1,6 @@
 from flask import Flask, request
 from caesar import encrypt
+from helpers import alphabet_position, rotate_character
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -10,25 +11,25 @@ form = """
 <html>
     <head>
         <style>
-            form {
+            form {{
                 background-color: #eee;
                 padding: 20px;
                 margin 0 auto;
                 width: 540px;
                 font: 16px sans-serif;
                 border-radius:10px;
-            }
-            textarea{
+            }}
+            textarea{{
                 margin:10px 0;
                 width: 540px;
                 height: 120px;
-            }
+            }}
         </style>
     </head>
     <body>
-        <form action="" method="post">
+        <form methods="post">
             <label for="rot">Rotate by:</label>
-            <input type="text" name="rot" value= 0 />
+            <input type="text" name="rot" value="0" >
             <br>
             <textarea name="text"> </textarea>
             <input type="submit"/>
@@ -40,16 +41,13 @@ form = """
 
 @app.route("/")
 def index():
-    return form
+    return form.format("")
 
-@app.route("/encode", methods=['POST'])
-def encode(rot,text):
-    rot = request.form['rot']
-    text = request.form['text']
-    new_message = encrypt(text,rot)
-    return '<h1>' + new_message + '</h1>'
-
-
-
+@app.route("/", methods=['POST'])
+def encode():
+    rot = int(request.form['rot'])
+    text = str(request.form['text'])
+    new_message = encrypt(text, rot)
+    return form.format(new_message)
 
 app.run()
